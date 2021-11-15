@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.seung.mybatis.notice.service.NoticeMapper">
+	<select id="noticeSelectList"
+		resultType="co.seung.mybatis.notice.service.NoticeVO">
+		select nid, id, name, to_char(writedate,'YY-MM-DD HH24:MI:SS') as writedate, title, contents, hit from notice order by nid desc
+	</select>
+
+	<select id="noticeSelect"
+		resultType="co.seung.mybatis.notice.service.NoticeVO">
+		select nid, id, name, to_char(writedate,'YY-MM-DD HH24:MI:SS') as writedate, title, contents, hit from notice where nid = #{nid} order by nid desc
+	</select>
+	
+	<select id="noticeSelectByTitle"
+		resultType="co.seung.mybatis.notice.service.NoticeVO">
+		select nid, id, name, to_char(writedate,'YY-MM-DD HH24:MI:SS') as writedate, title, contents, hit from notice where title like '%'||#{title}||'%' order by nid desc
+	</select>
+	
+	<select id="noticeSelectByNid"
+		resultType="co.seung.mybatis.notice.service.NoticeVO">
+		select nid, id, name, to_char(writedate,'YY-MM-DD HH24:MI:SS') as writedate, title, contents, hit from notice where nid = #{nid} order by nid desc
+	</select>
+
+	<insert id="noticeInsert"
+		parameterType="co.seung.mybatis.notice.service.NoticeVO">
+		insert into notice
+		values(b_seq.nextval,#{id},#{name},sysdate,#{title},#{contents},0)
+	</insert>
+
+	<update id="noticeUpdate">
+		update notice set title = #{title}, contents =
+		#{contents}
+		where 1=1
+		and nid = #{nid}
+	</update>
+
+	<update id="noticeHitUpdate">
+		update notice set hit = hit+1
+		where nid = #{nid}
+	</update>
+
+	<delete id="noticeDelete">
+		delete from notice where 1=1
+		and nid = #{nid}
+	</delete>
+
+	<delete id="noticeDeleteSelected" parameterType="co.seung.mybatis.notice.service.NoticeVO">
+		delete from notice where nid in
+		<foreach collection="array" item="nid" separator="," open="(" close=")">
+			#{nid}
+		</foreach>
+	</delete>
+</mapper>
